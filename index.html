@@ -7,218 +7,349 @@
   <meta name="Generator" content="Cocoa HTML Writer">
   <meta name="CocoaVersion" content="2685.6">
   <style type="text/css">
-    li.li1 {margin: 0.0px 0.0px 10.0px 0.0px; font: 14.0px Helvetica; color: #1c1a18; background-color: #ffffff}
-    li.li2 {margin: 0.0px 0.0px 10.0px 0.0px; font: 14.0px Helvetica; color: #1c1a18; background-color: #ffffff; min-height: 17.0px}
-    ol.ol1 {list-style-type: decimal}
-    ul.ul1 {list-style-type: circle}
-    ul.ul2 {list-style-type: square}
+    p.p1 {margin: 0.0px 0.0px 10.0px 108.0px; text-indent: -108.0px; font: 14.0px Helvetica; color: #151413; background-color: #ffffff}
+    p.p2 {margin: 0.0px 0.0px 10.0px 108.0px; text-indent: -108.0px; font: 14.0px Helvetica; color: #151413; background-color: #ffffff; min-height: 17.0px}
   </style>
 </head>
 <body>
-<ol class="ol1">
-  <ul class="ul1">
-    <ul class="ul2">
-      <li class="li1">&lt;!DOCTYPE html&gt;</li>
-      <li class="li1">&lt;html lang="it"&gt;</li>
-      <li class="li1">&lt;head&gt;</li>
-      <li class="li1">&lt;meta charset="UTF-8"&gt;</li>
-      <li class="li1">&lt;title&gt;SeM – Acquisti&lt;/title&gt;</li>
-      <li class="li1">&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</li>
-      <li class="li2"><br></li>
-      <li class="li1">&lt;!-- Firebase CDN --&gt;</li>
-      <li class="li1">&lt;script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"&gt;&lt;/script&gt;</li>
-      <li class="li1">&lt;script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"&gt;&lt;/script&gt;</li>
-      <li class="li1">&lt;script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"&gt;&lt;/script&gt;</li>
-      <li class="li2"><br></li>
-      <li class="li1">&lt;!-- SheetJS per Excel --&gt;</li>
-      <li class="li1">&lt;script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"&gt;&lt;/script&gt;</li>
-      <li class="li2"><br></li>
-      <li class="li1">&lt;style&gt;</li>
-      <li class="li1">body {</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>font-family: -apple-system, BlinkMacSystemFont, "San Francisco", sans-serif;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>background: #f7f7f7;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>margin: 0;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>padding: 0;</li>
-      <li class="li1">}</li>
-      <li class="li2"><br></li>
-      <li class="li1">.header {</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>text-align: center;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>padding: 25px 10px 15px;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>background: #ffffff;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>border-bottom: 1px solid #e5e5e5;</li>
-      <li class="li1">}</li>
-      <li class="li2"><br></li>
-      <li class="li1">.logo {</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>font-size: 34px;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>font-weight: 700;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>letter-spacing: -1px;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>color: #007aff;</li>
-      <li class="li1">}</li>
-      <li class="li2"><br></li>
-      <li class="li1">.subtitle {</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>font-size: 18px;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>color: #555;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>margin-top: -5px;</li>
-      <li class="li1">}</li>
-      <li class="li2"><br></li>
-      <li class="li1">select, input, button {</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>width: 100%;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>padding: 14px;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>font-size: 17px;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>border-radius: 12px;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>border: 1px solid #d1d1d1;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>margin-top: 12px;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>background: #fff;</li>
-      <li class="li1">}</li>
-      <li class="li2"><br></li>
-      <li class="li1">button {</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>background: #007aff;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>color: white;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>font-weight: 600;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>border: none;</li>
-      <li class="li1">}</li>
-      <li class="li2"><br></li>
-      <li class="li1">button.remove {</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>background: #ff3b30;</li>
-      <li class="li1">}</li>
-      <li class="li2"><br></li>
-      <li class="li1">.item {</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>background: #fff;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>padding: 14px;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>margin-top: 10px;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>border-radius: 12px;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>display: flex;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>justify-content: space-between;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>align-items: center;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>border: 1px solid #e5e5e5;</li>
-      <li class="li1">}</li>
-      <li class="li2"><br></li>
-      <li class="li1">.totale {</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>font-size: 22px;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>font-weight: 700;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>margin-top: 20px;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>text-align: center;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>color: #333;</li>
-      <li class="li1">}</li>
-      <li class="li1">&lt;/style&gt;</li>
-      <li class="li1">&lt;/head&gt;</li>
-      <li class="li2"><br></li>
-      <li class="li1">&lt;body&gt;</li>
-      <li class="li2"><br></li>
-      <li class="li1">&lt;!-- LOGIN --&gt;</li>
-      <li class="li1">&lt;div id="login-area"&gt;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>&lt;h3&gt;Accesso&lt;/h3&gt;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>&lt;input id="email" type="email" placeholder="Email"&gt;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>&lt;input id="password" type="password" placeholder="Password"&gt;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>&lt;button onclick="login()"&gt;Login&lt;/button&gt;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>&lt;button onclick="register()"&gt;Registrati&lt;/button&gt;</li>
-      <li class="li1">&lt;/div&gt;</li>
-      <li class="li2"><br></li>
-      <li class="li1">&lt;!-- APP --&gt;</li>
-      <li class="li1">&lt;div id="app-area" style="display:none;"&gt;</li>
-      <li class="li2"><br></li>
-      <li class="li1"><span class="Apple-converted-space">  </span>&lt;div class="header"&gt;</li>
-      <li class="li1"><span class="Apple-converted-space">    </span>&lt;div class="logo"&gt;SeM&lt;/div&gt;</li>
-      <li class="li1"><span class="Apple-converted-space">    </span>&lt;div class="subtitle" id="titolo"&gt;Acquisti&lt;/div&gt;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</li>
-      <li class="li2"><br></li>
-      <li class="li1"><span class="Apple-converted-space">  </span>&lt;button onclick="logout()"&gt;Logout&lt;/button&gt;</li>
-      <li class="li2"><br></li>
-      <li class="li1"><span class="Apple-converted-space">  </span>&lt;select id="anno" onchange="aggiorna()"&gt;</li>
-      <li class="li1"><span class="Apple-converted-space">    </span>&lt;option value="all"&gt;Tutti gli anni&lt;/option&gt;</li>
-      <li class="li1"><span class="Apple-converted-space">    </span>&lt;option value="2024"&gt;2024&lt;/option&gt;</li>
-      <li class="li1"><span class="Apple-converted-space">    </span>&lt;option value="2025"&gt;2025&lt;/option&gt;</li>
-      <li class="li1"><span class="Apple-converted-space">    </span>&lt;option value="2026"&gt;2026&lt;/option&gt;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>&lt;/select&gt;</li>
-      <li class="li2"><br></li>
-      <li class="li1"><span class="Apple-converted-space">  </span>&lt;select id="mese" onchange="aggiorna()"&gt;</li>
-      <li class="li1"><span class="Apple-converted-space">    </span>&lt;option value="all"&gt;Tutti i mesi&lt;/option&gt;</li>
-      <li class="li1"><span class="Apple-converted-space">    </span>&lt;option value="1"&gt;Gennaio&lt;/option&gt;</li>
-      <li class="li1"><span class="Apple-converted-space">    </span>&lt;option value="2"&gt;Febbraio&lt;/option&gt;</li>
-      <li class="li1"><span class="Apple-converted-space">    </span>&lt;option value="3"&gt;Marzo&lt;/option&gt;</li>
-      <li class="li1"><span class="Apple-converted-space">    </span>&lt;option value="4"&gt;Aprile&lt;/option&gt;</li>
-      <li class="li1"><span class="Apple-converted-space">    </span>&lt;option value="5"&gt;Maggio&lt;/option&gt;</li>
-      <li class="li1"><span class="Apple-converted-space">    </span>&lt;option value="6"&gt;Giugno&lt;/option&gt;</li>
-      <li class="li1"><span class="Apple-converted-space">    </span>&lt;option value="7"&gt;Luglio&lt;/option&gt;</li>
-      <li class="li1"><span class="Apple-converted-space">    </span>&lt;option value="8"&gt;Agosto&lt;/option&gt;</li>
-      <li class="li1"><span class="Apple-converted-space">    </span>&lt;option value="9"&gt;Settembre&lt;/option&gt;</li>
-      <li class="li1"><span class="Apple-converted-space">    </span>&lt;option value="10"&gt;Ottobre&lt;/option&gt;</li>
-      <li class="li1"><span class="Apple-converted-space">    </span>&lt;option value="11"&gt;Novembre&lt;/option&gt;</li>
-      <li class="li1"><span class="Apple-converted-space">    </span>&lt;option value="12"&gt;Dicembre&lt;/option&gt;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>&lt;/select&gt;</li>
-      <li class="li2"><br></li>
-      <li class="li1"><span class="Apple-converted-space">  </span>&lt;input id="motivazione" placeholder="Motivazione della spesa"&gt;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>&lt;input id="importo" type="number" step="0.01" placeholder="Importo (€)"&gt;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>&lt;button onclick="aggiungi()"&gt;Aggiungi Spesa&lt;/button&gt;</li>
-      <li class="li2"><br></li>
-      <li class="li1"><span class="Apple-converted-space">  </span>&lt;button onclick="esportaExcel()"&gt;Esporta in Excel&lt;/button&gt;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>&lt;button onclick="creaBackup()"&gt;Crea backup&lt;/button&gt;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>&lt;button onclick="ripristinaUltimoBackup()"&gt;Ripristina ultimo backup&lt;/button&gt;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>&lt;button onclick="esportaBackupJSON()"&gt;Esporta backup (JSON)&lt;/button&gt;</li>
-      <li class="li2"><br></li>
-      <li class="li1"><span class="Apple-converted-space">  </span>&lt;div id="lista"&gt;&lt;/div&gt;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>&lt;div class="totale" id="totale"&gt;&lt;/div&gt;</li>
-      <li class="li1">&lt;/div&gt;</li>
-      <li class="li2"><br></li>
-      <li class="li1">&lt;script&gt;</li>
-      <li class="li1">// CONFIG FIREBASE (TUO BLOCCO)</li>
-      <li class="li1">const firebaseConfig = {</li>
-      <li class="li1"><span class="Apple-converted-space">    </span>apiKey: "AIzaSyAvF1s89fuKnJAzx6TbU7WbqDqNvGPRE5k",</li>
-      <li class="li1"><span class="Apple-converted-space">    </span>authDomain: "sem-acquisti.firebaseapp.com",</li>
-      <li class="li1"><span class="Apple-converted-space">    </span>projectId: "sem-acquisti",</li>
-      <li class="li1"><span class="Apple-converted-space">    </span>storageBucket: "sem-acquisti.firebasestorage.app",</li>
-      <li class="li1"><span class="Apple-converted-space">    </span>messagingSenderId: "672213974481",</li>
-      <li class="li1"><span class="Apple-converted-space">    </span>appId: "1:672213974481:web:ec91d7a28b5dca231a34f0",</li>
-      <li class="li1"><span class="Apple-converted-space">    </span>measurementId: "G-RC731QR9E9"</li>
-      <li class="li1">};</li>
-      <li class="li2"><br></li>
-      <li class="li1">const app = firebase.initializeApp(firebaseConfig);</li>
-      <li class="li1">const db = firebase.firestore();</li>
-      <li class="li1">const auth = firebase.auth();</li>
-      <li class="li2"><br></li>
-      <li class="li1">// LOGIN</li>
-      <li class="li1">auth.onAuthStateChanged(user =&gt; {</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>if (user) {</li>
-      <li class="li1"><span class="Apple-converted-space">    </span>login-area.style.display = "none";</li>
-      <li class="li1"><span class="Apple-converted-space">    </span>app-area.style.display = "block";</li>
-      <li class="li1"><span class="Apple-converted-space">    </span>aggiorna();</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>} else {</li>
-      <li class="li1"><span class="Apple-converted-space">    </span>login-area.style.display = "block";</li>
-      <li class="li1"><span class="Apple-converted-space">    </span>app-area.style.display = "none";</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>}</li>
-      <li class="li1">});</li>
-      <li class="li2"><br></li>
-      <li class="li1">function register() {</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>auth.createUserWithEmailAndPassword(email.value, password.value)</li>
-      <li class="li1"><span class="Apple-converted-space">    </span>.catch(err =&gt; alert(err.message));</li>
-      <li class="li1">}</li>
-      <li class="li2"><br></li>
-      <li class="li1">function login() {</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>auth.signInWithEmailAndPassword(email.value, password.value)</li>
-      <li class="li1"><span class="Apple-converted-space">    </span>.catch(err =&gt; alert(err.message));</li>
-      <li class="li1">}</li>
-      <li class="li2"><br></li>
-      <li class="li1">function logout() {</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>auth.signOut();</li>
-      <li class="li1">}</li>
-      <li class="li2"><br></li>
-      <li class="li1">// TITOLO DINAMICO</li>
-      <li class="li1">function aggiornaTitolo() {</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>const mese = mese.value;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>const anno = anno.value;</li>
-      <li class="li2"><br></li>
-      <li class="li1"><span class="Apple-converted-space">  </span>let testo = "Acquisti";</li>
-      <li class="li2"><br></li>
-      <li class="li1"><span class="Apple-converted-space">  </span>if (anno !== "all" &amp;&amp; mese === "all") testo += ` (${anno})`;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>else if (anno !== "all" &amp;&amp; mese !== "all") testo += ` (${anno} / ${mese})`;</li>
-      <li class="li1"><span class="Apple-converted-space">  </span>else if (anno === "all" &amp;&amp; mese !== "all") testo += ` (Mese ${mese})`;</li>
-      <li class="li2"><br></li>
-      <li class="li1"><span class="Apple-converted-space">  </span>titolo.innerText = testo;</li>
-      <li class="li1">}</li>
-      <li class="li2"><br></li>
-      <li class="li1">// AG</li>
-    </ul>
-  </ul>
-</ol>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="it"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1">&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1">&lt;title&gt;SeM – Acquisti&lt;/title&gt;</p>
+<p class="p1">&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;!-- Firebase CDN --&gt;</p>
+<p class="p1">&lt;script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"&gt;&lt;/script&gt;</p>
+<p class="p1">&lt;script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"&gt;&lt;/script&gt;</p>
+<p class="p1">&lt;script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"&gt;&lt;/script&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;!-- SheetJS per Excel --&gt;</p>
+<p class="p1">&lt;script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"&gt;&lt;/script&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;style&gt;</p>
+<p class="p1">body {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-family: -apple-system, BlinkMacSystemFont, "San Francisco", sans-serif;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>background: #f7f7f7;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>margin: 0;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>padding: 0;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.header {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>text-align: center;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>padding: 25px 10px 15px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>background: #ffffff;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>border-bottom: 1px solid #e5e5e5;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.logo {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-size: 34px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-weight: 700;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>letter-spacing: -1px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>color: #007aff;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.subtitle {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-size: 18px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>color: #555;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>margin-top: -5px;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">select, input, button {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>width: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>padding: 14px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-size: 17px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>border-radius: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>border: 1px solid #d1d1d1;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>margin-top: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>background: #fff;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">button {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>background: #007aff;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>color: white;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-weight: 600;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>border: none;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">button.remove {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>background: #ff3b30;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.item {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>background: #fff;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>padding: 14px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>margin-top: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>border-radius: 12px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>justify-content: space-between;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>border: 1px solid #e5e5e5;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">.totale {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-size: 22px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>font-weight: 700;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>margin-top: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>text-align: center;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>color: #333;</p>
+<p class="p1">}</p>
+<p class="p1">&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;!-- LOGIN --&gt;</p>
+<p class="p1">&lt;div id="login-area"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;h3&gt;Accesso&lt;/h3&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;input id="email" type="email" placeholder="Email"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;input id="password" type="password" placeholder="Password"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;button onclick="login()"&gt;Login&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;button onclick="register()"&gt;Registrati&lt;/button&gt;</p>
+<p class="p1">&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;!-- APP --&gt;</p>
+<p class="p1">&lt;div id="app-area" style="display:none;"&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="header"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="logo"&gt;SeM&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="subtitle" id="titolo"&gt;Acquisti&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;button onclick="logout()"&gt;Logout&lt;/button&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;select id="anno" onchange="aggiorna()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;option value="all"&gt;Tutti gli anni&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;option value="2024"&gt;2024&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;option value="2025"&gt;2025&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;option value="2026"&gt;2026&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/select&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;select id="mese" onchange="aggiorna()"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;option value="all"&gt;Tutti i mesi&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;option value="1"&gt;Gennaio&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;option value="2"&gt;Febbraio&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;option value="3"&gt;Marzo&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;option value="4"&gt;Aprile&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;option value="5"&gt;Maggio&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;option value="6"&gt;Giugno&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;option value="7"&gt;Luglio&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;option value="8"&gt;Agosto&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;option value="9"&gt;Settembre&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;option value="10"&gt;Ottobre&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;option value="11"&gt;Novembre&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;option value="12"&gt;Dicembre&lt;/option&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/select&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;input id="motivazione" placeholder="Motivazione della spesa"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;input id="importo" type="number" step="0.01" placeholder="Importo (€)"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;button onclick="aggiungi()"&gt;Aggiungi Spesa&lt;/button&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;button onclick="esportaExcel()"&gt;Esporta in Excel&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;button onclick="creaBackup()"&gt;Crea backup&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;button onclick="ripristinaUltimoBackup()"&gt;Ripristina ultimo backup&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;button onclick="esportaBackupJSON()"&gt;Esporta backup (JSON)&lt;/button&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div id="lista"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div class="totale" id="totale"&gt;&lt;/div&gt;</p>
+<p class="p1">&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;script&gt;</p>
+<p class="p1">// CONFIG FIREBASE</p>
+<p class="p1">const firebaseConfig = {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>apiKey: "AIzaSyAvF1s89fuKnJAzx6TbU7WbqDqNvGPRE5k",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>authDomain: "sem-acquisti.firebaseapp.com",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>projectId: "sem-acquisti",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>storageBucket: "sem-acquisti.firebasestorage.app",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>messagingSenderId: "672213974481",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>appId: "1:672213974481:web:ec91d7a28b5dca231a34f0",</p>
+<p class="p1"><span class="Apple-converted-space">    </span>measurementId: "G-RC731QR9E9"</p>
+<p class="p1">};</p>
+<p class="p2"><br></p>
+<p class="p1">const app = firebase.initializeApp(firebaseConfig);</p>
+<p class="p1">const db = firebase.firestore();</p>
+<p class="p1">const auth = firebase.auth();</p>
+<p class="p2"><br></p>
+<p class="p1">// LOGIN</p>
+<p class="p1">auth.onAuthStateChanged(user =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if (user) {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById("login-area").style.display = "none";</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById("app-area").style.display = "block";</p>
+<p class="p1"><span class="Apple-converted-space">    </span>aggiorna();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById("login-area").style.display = "block";</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.getElementById("app-area").style.display = "none";</p>
+<p class="p1"><span class="Apple-converted-space">  </span>}</p>
+<p class="p1">});</p>
+<p class="p2"><br></p>
+<p class="p1">function register() {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>auth.createUserWithEmailAndPassword(email.value, password.value)</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.catch(err =&gt; alert(err.message));</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">function login() {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>auth.signInWithEmailAndPassword(email.value, password.value)</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.catch(err =&gt; alert(err.message));</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">function logout() {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>auth.signOut();</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">// TITOLO DINAMICO</p>
+<p class="p1">function aggiornaTitolo() {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const meseSel = document.getElementById("mese").value;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const annoSel = document.getElementById("anno").value;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>let testo = "Acquisti";</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>if (annoSel !== "all" &amp;&amp; meseSel === "all") testo += ` (${annoSel})`;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>else if (annoSel !== "all" &amp;&amp; meseSel !== "all") testo += ` (${annoSel} / ${meseSel})`;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>else if (annoSel === "all" &amp;&amp; meseSel !== "all") testo += ` (Mese ${meseSel})`;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>document.getElementById("titolo").innerText = testo;</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">// AGGIORNA LISTA</p>
+<p class="p1">function aggiorna() {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const meseSel = document.getElementById("mese").value;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const annoSel = document.getElementById("anno").value;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>db.collection("spese").orderBy("timestamp").onSnapshot(snapshot =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>lista.innerHTML = "";</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let totale = 0;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>snapshot.forEach(doc =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const s = doc.data();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const data = new Date(s.timestamp);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const m = data.getMonth() + 1;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const a = data.getFullYear();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (annoSel !== "all" &amp;&amp; a != annoSel) return;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (meseSel !== "all" &amp;&amp; m != meseSel) return;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>totale += s.importo;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>lista.innerHTML += `</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="item"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div&gt;${s.motivazione}&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div&gt;€ ${s.importo.toFixed(2)}&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button class="remove" onclick="rimuovi('${doc.id}')"&gt;X&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>totale.innerText = "Totale: € " + totale.toFixed(2);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>aggiornaTitolo();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>});</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">// AGGIUNGI</p>
+<p class="p1">function aggiungi() {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>if (!motivazione.value || !importo.value) return;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>db.collection("spese").add({</p>
+<p class="p1"><span class="Apple-converted-space">    </span>motivazione: motivazione.value,</p>
+<p class="p1"><span class="Apple-converted-space">    </span>importo: parseFloat(importo.value),</p>
+<p class="p1"><span class="Apple-converted-space">    </span>timestamp: Date.now()</p>
+<p class="p1"><span class="Apple-converted-space">  </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>motivazione.value = "";</p>
+<p class="p1"><span class="Apple-converted-space">  </span>importo.value = "";</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">// RIMUOVI</p>
+<p class="p1">function rimuovi(id) {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>db.collection("spese").doc(id).delete();</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">// EXPORT EXCEL</p>
+<p class="p1">function esportaExcel() {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const meseSel = document.getElementById("mese").value;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>const annoSel = document.getElementById("anno").value;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>db.collection("spese").orderBy("timestamp").get().then(snapshot =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const dati = [];</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let totale = 0;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>snapshot.forEach(doc =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const s = doc.data();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const data = new Date(s.timestamp);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const m = data.getMonth() + 1;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const a = data.getFullYear();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (annoSel !== "all" &amp;&amp; a != annoSel) return;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (meseSel !== "all" &amp;&amp; m != meseSel) return;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>totale += s.importo;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>dati.push({</p>
+<p class="p1"><span class="Apple-converted-space">        </span>"Motivazione": s.motivazione,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>"Importo (€)": s.importo,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>"Data": data.toLocaleString()</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>dati.push({ "Motivazione": "TOTALE", "Importo (€)": totale, "Data": "" });</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const ws = XLSX.utils.json_to_sheet(dati);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const wb = XLSX.utils.book_new();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>XLSX.utils.book_append_sheet(wb, ws, "Spese");</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>XLSX.writeFile(wb, "spese.xlsx");</p>
+<p class="p1"><span class="Apple-converted-space">  </span>});</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">// BACKUP AUTOMATICO</p>
+<p class="p1">function creaBackup() {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>db.collection("spese").get().then(snapshot =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const dati = [];</p>
+<p class="p1"><span class="Apple-converted-space">    </span>snapshot.forEach(doc =&gt; dati.push(doc.data()));</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>db.collection("backup").add({</p>
+<p class="p1"><span class="Apple-converted-space">      </span>timestamp: Date.now(),</p>
+<p class="p1"><span class="Apple-converted-space">      </span>dati: dati</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}).then(() =&gt; alert("Backup creato"));</p>
+<p class="p1"><span class="Apple-converted-space">  </span>});</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">// RIPRISTINO</p>
+<p class="p1">function ripristinaUltimoBackup() {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>db.collection("backup").orderBy("timestamp", "desc").limit(1).get().then(snapshot =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>if (snapshot.empty) return alert("Nessun backup");</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const backup = snapshot.docs[0].data().dati;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>db.collection("spese").get().then(speseSnap =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const batch = db.batch();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>speseSnap.forEach(doc =&gt; batch.delete(doc.ref));</p>
+<p class="p1"><span class="Apple-converted-space">      </span>batch.commit().then(() =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>backup.forEach(s =&gt; db.collection("spese").add(s));</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p1"><span class="Apple-converted-space">  </span>});</p>
+<p class="p1">}</p>
+<p class="p2"><br></p>
+<p class="p1">// BACKUP JSON</p>
+<p class="p1">function esportaBackupJSON() {</p>
+<p class="p1"><span class="Apple-converted-space">  </span>db.collection("spese").get().then(snapshot =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const dati = [];</p>
+<p class="p1"><span class="Apple-converted-space">    </span>snapshot.forEach(doc =&gt; dati.push(doc.data()));</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const blob = new Blob([JSON.stringify(dati, null, 2)], { type: "application/json" });</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const url = URL.createObjectURL(blob);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const a = document.createElement("a");</p>
+<p class="p1"><span class="Apple-converted-space">    </span>a.href = url;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>a.download = "backup_spese.json";</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.body.appendChild(a);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>a.click();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>document.body.removeChild(a);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>URL.revokeObjectURL(url);</p>
+<p class="p1"><span class="Apple-converted-space">  </span>});</p>
+<p class="p1">}</p>
+<p class="p1">&lt;/script&gt;</p>
+<p class="p2"><br></p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
 </body>
 </html>
