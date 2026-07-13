@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>SeM – Acquisti</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Firebase CDN -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+
+<!-- SheetJS per Excel -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+<style>
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "San Francisco", sans-serif;
+  background: #f7f7f7;
+  margin: 0;
+  padding: 0;
+}
+
+.header {
+  text-align: center;
+  padding: 25px 10px 15px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.logo {
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -1px;
+  color: #007aff;
+}
+
+.subtitle {
+  font-size: 18px;
+  color: #555;
+  margin-top: -5px;
+}
+
+select, input, button {
+  width: 100%;
+  padding: 14px;
+  font-size: 17px;
+  border-radius: 12px;
+  border: 1px solid #d1d1d1;
+  margin-top: 12px;
+  background: #fff;
+}
+
+button {
+  background: #007aff;
+  color: white;
+  font-weight: 600;
+  border: none;
+}
+
+button.remove {
+  background: #ff3b30;
+}
+
+.item {
+  background: #fff;
+  padding: 14px;
+  margin-top: 10px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #e5e5e5;
+}
+
+.totale {
+  font-size: 22px;
+  font-weight: 700;
+  margin-top: 20px;
+  text-align: center;
+  color: #333;
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div id="login-area">
+  <h3>Accesso</h3>
+  <input id="email" type="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+  <button onclick="register()">Registrati</button>
+</div>
+
+<!-- APP -->
+<div id="app-area" style="display:none;">
+
+  <div class="header">
+    <div class="logo">SeM</div>
+    <div class="subtitle" id="titolo">Acquisti</div>
+  </div>
+
+  <button onclick="logout()">Logout</button>
+
+  <select id="anno" onchange="aggiorna()">
+    <option value="all">Tutti gli anni</option>
+    <option value="2024">2024</option>
+    <option value="2025">2025</option>
+    <option value="2026">2026</option>
+  </select>
+
+  <select id="mese" onchange="aggiorna()">
+    <option value="all">Tutti i mesi</option>
+    <option value="1">Gennaio</option>
+    <option value="2">Febbraio</option>
+    <option value="3">Marzo</option>
+    <option value="4">Aprile</option>
+    <option value="5">Maggio</option>
+    <option value="6">Giugno</option>
+    <option value="7">Luglio</option>
+    <option value="8">Agosto</option>
+    <option value="9">Settembre</option>
+    <option value="10">Ottobre</option>
+    <option value="11">Novembre</option>
+    <option value="12">Dicembre</option>
+  </select>
+
+  <input id="motivazione" placeholder="Motivazione della spesa">
+  <input id="importo" type="number" step="0.01" placeholder="Importo (€)">
+  <button onclick="aggiungi()">Aggiungi Spesa</button>
+
+  <button onclick="esportaExcel()">Esporta in Excel</button>
+  <button onclick="creaBackup()">Crea backup</button>
+  <button onclick="ripristinaUltimoBackup()">Ripristina ultimo backup</button>
+  <button onclick="esportaBackupJSON()">Esporta backup (JSON)</button>
+
+  <div id="lista"></div>
+  <div class="totale" id="totale"></div>
+</div>
+
+<script>
+// CONFIG FIREBASE
+const firebaseConfig = {
+    apiKey: "AIzaSyAvF1s89fuKnJAzx6TbU7WbqDqNvGPRE5k",
+    authDomain: "sem-acquisti.firebaseapp.com",
+    projectId: "sem-acquisti",
+    storageBucket: "sem-acquisti.firebasestorage.app",
+    messagingSenderId: "672213974481",
+    appId: "1:672213974481:web:ec91d7a28b5dca231a34f0",
+    measurementId: "G-RC731QR9E9"
+};
+
+const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const auth = firebase.auth();
+
+// LOGIN
+auth.onAuthStateChanged(user => {
+  if (user) {
+    document.getElementById("login-area").style.display = "none";
+    document.getElementById("app-area").style.display = "block";
+    aggiorna();
+  } else {
+    document.getElementById("login-area").style.display = "block";
+    document.getElementById("app-area").style.display = "none";
+  }
+});
+
+function register() {
+  auth.createUserWithEmailAndPassword(email.value, password.value)
+    .catch(err => alert(err.message));
+}
+
+function login() {
+  auth.signInWithEmailAndPassword(email.value, password.value)
+    .catch(err => alert(err.message));
+}
+
+function logout() {
+  auth.signOut();
+}
+
+// TITOLO DINAMICO
+function aggiornaTitolo() {
+  const meseSel = document.getElementById("mese").value;
+  const annoSel = document.getElementById("anno").value;
+
+  let testo = "Acquisti";
+
+  if (annoSel !== "all" && meseSel === "all") testo += ` (${annoSel})`;
+  else if (annoSel !== "all" && meseSel !== "all") testo += ` (${annoSel} / ${meseSel})`;
+  else if (annoSel === "all" && meseSel !== "all") testo += ` (Mese ${meseSel})`;
+
+  document.getElementById("titolo").innerText = testo;
+}
+
+// AGGIORNA LISTA
+function aggiorna() {
+  const meseSel = document.getElementById("mese").value;
+  const annoSel = document.getElementById("anno").value;
+
+  db.collection("spese").orderBy("timestamp").onSnapshot(snapshot => {
+    lista.innerHTML = "";
+    let totale = 0;
+
+    snapshot.forEach(doc => {
+      const s = doc.data();
+      const data = new Date(s.timestamp);
+      const m = data.getMonth() + 1;
+      const a = data.getFullYear();
+
+      if (annoSel !== "all" && a != annoSel) return;
+      if (meseSel !== "all" && m != meseSel) return;
+
+      totale += s.importo;
+
+      lista.innerHTML += `
+        <div class="item">
+          <div>${s.motivazione}</div>
+          <div>€ ${s.importo.toFixed(2)}</div>
+          <button class="remove" onclick="rimuovi('${doc.id}')">X</button>
+        </div>`;
+    });
+
+    totale.innerText = "Totale: € " + totale.toFixed(2);
+    aggiornaTitolo();
+  });
+}
+
+// AGGIUNGI
+function aggiungi() {
+  if (!motivazione.value || !importo.value) return;
+
+  db.collection("spese").add({
+    motivazione: motivazione.value,
+    importo: parseFloat(importo.value),
+    timestamp: Date.now()
+  });
+
+  motivazione.value = "";
+  importo.value = "";
+}
+
+// RIMUOVI
+function rimuovi(id) {
+  db.collection("spese").doc(id).delete();
+}
+
+// EXPORT EXCEL
+function esportaExcel() {
+  const meseSel = document.getElementById("mese").value;
+  const annoSel = document.getElementById("anno").value;
+
+  db.collection("spese").orderBy("timestamp").get().then(snapshot => {
+    const dati = [];
+    let totale = 0;
+
+    snapshot.forEach(doc => {
+      const s = doc.data();
+      const data = new Date(s.timestamp);
+      const m = data.getMonth() + 1;
+      const a = data.getFullYear();
+
+      if (annoSel !== "all" && a != annoSel) return;
+      if (meseSel !== "all" && m != meseSel) return;
+
+      totale += s.importo;
+
+      dati.push({
+        "Motivazione": s.motivazione,
+        "Importo (€)": s.importo,
+        "Data": data.toLocaleString()
+      });
+    });
+
+    dati.push({ "Motivazione": "TOTALE", "Importo (€)": totale, "Data": "" });
+
+    const ws = XLSX.utils.json_to_sheet(dati);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Spese");
+
+    XLSX.writeFile(wb, "spese.xlsx");
+  });
+}
+
+// BACKUP AUTOMATICO
+function creaBackup() {
+  db.collection("spese").get().then(snapshot => {
+    const dati = [];
+    snapshot.forEach(doc => dati.push(doc.data()));
+
+    db.collection("backup").add({
+      timestamp: Date.now(),
+      dati: dati
+    }).then(() => alert("Backup creato"));
+  });
+}
+
+// RIPRISTINO
+function ripristinaUltimoBackup() {
+  db.collection("backup").orderBy("timestamp", "desc").limit(1).get().then(snapshot => {
+    if (snapshot.empty) return alert("Nessun backup");
+
+    const backup = snapshot.docs[0].data().dati;
+
+    db.collection("spese").get().then(speseSnap => {
+      const batch = db.batch();
+      speseSnap.forEach(doc => batch.delete(doc.ref));
+      batch.commit().then(() => {
+        backup.forEach(s => db.collection("spese").add(s));
+      });
+    });
+  });
+}
+
+// BACKUP JSON
+function esportaBackupJSON() {
+  db.collection("spese").get().then(snapshot => {
+    const dati = [];
+    snapshot.forEach(doc => dati.push(doc.data()));
+
+    const blob = new Blob([JSON.stringify(dati, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "backup_spese.json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+}
+</script>
+
+</body>
+</html>
