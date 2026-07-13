@@ -5,114 +5,46 @@
 <title>SeM – Acquisti</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!-- Firebase CDN -->
+<!-- Firebase compat -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 
-<!-- SheetJS per Excel -->
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-
 <style>
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "San Francisco", sans-serif;
-  background: #f7f7f7;
-  margin: 0;
-  padding: 0;
-}
-
-.header {
-  text-align: center;
-  padding: 25px 10px 15px;
-  background: #ffffff;
-  border-bottom: 1px solid #e5e5e5;
-}
-
-.logo {
-  font-size: 34px;
-  font-weight: 700;
-  letter-spacing: -1px;
-  color: #007aff;
-}
-
-.subtitle {
-  font-size: 18px;
-  color: #555;
-  margin-top: -5px;
-}
-
-select, input, button {
-  width: 100%;
-  padding: 14px;
-  font-size: 17px;
-  border-radius: 12px;
-  border: 1px solid #d1d1d1;
-  margin-top: 12px;
-  background: #fff;
-}
-
-button {
-  background: #007aff;
-  color: white;
-  font-weight: 600;
-  border: none;
-}
-
-button.remove {
-  background: #ff3b30;
-}
-
-.item {
-  background: #fff;
-  padding: 14px;
-  margin-top: 10px;
-  border-radius: 12px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border: 1px solid #e5e5e5;
-}
-
-.totale {
-  font-size: 22px;
-  font-weight: 700;
-  margin-top: 20px;
-  text-align: center;
-  color: #333;
-}
+body { font-family: Arial; padding: 20px; }
+#app-area { display: none; }
+#settings-menu { display:none; margin-top:10px; }
+button { margin:5px; padding:10px; }
 </style>
-</head>
 
+</head>
 <body>
 
 <!-- LOGIN -->
 <div id="login-area">
-  <h3>Accesso</h3>
-  <input id="email" type="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
+  <h2>Login</h2>
+  <input id="email" type="email" placeholder="Email"><br>
+  <input id="password" type="password" placeholder="Password"><br>
   <button onclick="login()">Login</button>
-  <button onclick="register()">Registrati</button>
 </div>
 
 <!-- APP -->
-<div id="app-area" style="display:none;">
+<div id="app-area">
 
-  <div class="header">
-    <div class="logo">SeM</div>
-    <div class="subtitle" id="titolo">Acquisti</div>
+  <h2>Gestione Spese</h2>
+
+  <!-- Pulsante ingranaggio -->
+  <button id="settings-btn" onclick="toggleSettings()">⚙️</button>
+
+  <!-- Menu impostazioni -->
+  <div id="settings-menu">
+    <button onclick="esporta()">Esporta dati</button>
+    <button onclick="backup()">Backup</button>
   </div>
 
-  <button onclick="logout()">Logout</button>
-
-  <select id="anno" onchange="aggiorna()">
-    <option value="all">Tutti gli anni</option>
-    <option value="2024">2024</option>
-    <option value="2025">2025</option>
-    <option value="2026">2026</option>
-  </select>
-
-  <select id="mese" onchange="aggiorna()">
-    <option value="all">Tutti i mesi</option>
+  <!-- Filtri -->
+  <h3>Filtri</h3>
+  <select id="mese">
     <option value="1">Gennaio</option>
     <option value="2">Febbraio</option>
     <option value="3">Marzo</option>
@@ -127,40 +59,57 @@ button.remove {
     <option value="12">Dicembre</option>
   </select>
 
-  <input id="motivazione" placeholder="Motivazione della spesa">
-  <input id="importo" type="number" step="0.01" placeholder="Importo (€)">
-  <button onclick="aggiungi()">Aggiungi Spesa</button>
+  <input id="anno" type="number" value="2024">
 
-  <button onclick="esportaExcel()">Esporta in Excel</button>
-  <button onclick="creaBackup()">Crea backup</button>
-  <button onclick="ripristinaUltimoBackup()">Ripristina ultimo backup</button>
-  <button onclick="esportaBackupJSON()">Esporta backup (JSON)</button>
+  <button onclick="aggiorna()">Visualizza spese</button>
+  <button onclick="mostraSpeseMeseCorrente()">Mostra spese mese corrente</button>
 
-  <div id="lista"></div>
-  <div class="totale" id="totale"></div>
+  <hr>
+
+  <!-- Aggiunta spesa -->
+  <h3>Aggiungi Spesa</h3>
+  <input id="motivazione" placeholder="Motivo" value="Spesa">
+  <input id="importo" type="number" step="0.01" placeholder="€" value="0">
+  <button onclick="aggiungi()">Aggiungi</button>
+
+  <hr>
+
+  <!-- Lista spese -->
+  <h3>Spese</h3>
+  <ul id="lista"></ul>
+
+  <h3 id="totale">Totale: € 0</h3>
+
 </div>
 
 <script>
 // CONFIG FIREBASE
 const firebaseConfig = {
-    apiKey: "AIzaSyAvF1s89fuKnJAzx6TbU7WbqDqNvGPRE5k",
-    authDomain: "sem-acquisti.firebaseapp.com",
-    projectId: "sem-acquisti",
-    storageBucket: "sem-acquisti.firebasestorage.app",
-    messagingSenderId: "672213974481",
-    appId: "1:672213974481:web:ec91d7a28b5dca231a34f0",
-    measurementId: "G-RC731QR9E9"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
 };
 
-const app = firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
 
 // LOGIN
+function login() {
+  auth.signInWithEmailAndPassword(email.value, password.value)
+    .catch(err => alert(err.message));
+}
+
+// MOSTRA APP DOPO LOGIN
 auth.onAuthStateChanged(user => {
   if (user) {
     document.getElementById("login-area").style.display = "none";
     document.getElementById("app-area").style.display = "block";
+
+    impostaMeseCorrente();
     aggiorna();
   } else {
     document.getElementById("login-area").style.display = "block";
@@ -168,68 +117,14 @@ auth.onAuthStateChanged(user => {
   }
 });
 
-function register() {
-  auth.createUserWithEmailAndPassword(email.value, password.value)
-    .catch(err => alert(err.message));
+// IMPOSTA MESE CORRENTE
+function impostaMeseCorrente() {
+  const oggi = new Date();
+  document.getElementById("mese").value = oggi.getMonth() + 1;
+  document.getElementById("anno").value = oggi.getFullYear();
 }
 
-function login() {
-  auth.signInWithEmailAndPassword(email.value, password.value)
-    .catch(err => alert(err.message));
-}
-
-function logout() {
-  auth.signOut();
-}
-
-// TITOLO DINAMICO
-function aggiornaTitolo() {
-  const meseSel = document.getElementById("mese").value;
-  const annoSel = document.getElementById("anno").value;
-
-  let testo = "Acquisti";
-
-  if (annoSel !== "all" && meseSel === "all") testo += ` (${annoSel})`;
-  else if (annoSel !== "all" && meseSel !== "all") testo += ` (${annoSel} / ${meseSel})`;
-  else if (annoSel === "all" && meseSel !== "all") testo += ` (Mese ${meseSel})`;
-
-  document.getElementById("titolo").innerText = testo;
-}
-
-// AGGIORNA LISTA
-function aggiorna() {
-  const meseSel = document.getElementById("mese").value;
-  const annoSel = document.getElementById("anno").value;
-
-  db.collection("spese").orderBy("timestamp").onSnapshot(snapshot => {
-    lista.innerHTML = "";
-    let totale = 0;
-
-    snapshot.forEach(doc => {
-      const s = doc.data();
-      const data = new Date(s.timestamp);
-      const m = data.getMonth() + 1;
-      const a = data.getFullYear();
-
-      if (annoSel !== "all" && a != annoSel) return;
-      if (meseSel !== "all" && m != meseSel) return;
-
-      totale += s.importo;
-
-      lista.innerHTML += `
-        <div class="item">
-          <div>${s.motivazione}</div>
-          <div>€ ${s.importo.toFixed(2)}</div>
-          <button class="remove" onclick="rimuovi('${doc.id}')">X</button>
-        </div>`;
-    });
-
-    totale.innerText = "Totale: € " + totale.toFixed(2);
-    aggiornaTitolo();
-  });
-}
-
-// AGGIUNGI
+// AGGIUNGI SPESA
 function aggiungi() {
   if (!motivazione.value || !importo.value) return;
 
@@ -239,100 +134,58 @@ function aggiungi() {
     timestamp: Date.now()
   });
 
-  motivazione.value = "";
-  importo.value = "";
+  motivazione.value = "Spesa";
+  importo.value = "0";
+
+  aggiorna();
 }
 
-// RIMUOVI
-function rimuovi(id) {
-  db.collection("spese").doc(id).delete();
+// MOSTRA SPESE MESE CORRENTE
+function mostraSpeseMeseCorrente() {
+  impostaMeseCorrente();
+  aggiorna();
 }
 
-// EXPORT EXCEL
-function esportaExcel() {
-  const meseSel = document.getElementById("mese").value;
-  const annoSel = document.getElementById("anno").value;
+// AGGIORNA LISTA
+function aggiorna() {
+  const mese = parseInt(document.getElementById("mese").value);
+  const anno = parseInt(document.getElementById("anno").value);
 
-  db.collection("spese").orderBy("timestamp").get().then(snapshot => {
-    const dati = [];
+  db.collection("spese").orderBy("timestamp", "desc").get().then(snapshot => {
+    let html = "";
     let totale = 0;
 
     snapshot.forEach(doc => {
       const s = doc.data();
-      const data = new Date(s.timestamp);
-      const m = data.getMonth() + 1;
-      const a = data.getFullYear();
+      const d = new Date(s.timestamp);
 
-      if (annoSel !== "all" && a != annoSel) return;
-      if (meseSel !== "all" && m != meseSel) return;
-
-      totale += s.importo;
-
-      dati.push({
-        "Motivazione": s.motivazione,
-        "Importo (€)": s.importo,
-        "Data": data.toLocaleString()
-      });
+      if (d.getMonth() + 1 === mese && d.getFullYear() === anno) {
+        html += `<li>${s.motivazione} - € ${s.importo.toFixed(2)}</li>`;
+        totale += s.importo;
+      }
     });
 
-    dati.push({ "Motivazione": "TOTALE", "Importo (€)": totale, "Data": "" });
-
-    const ws = XLSX.utils.json_to_sheet(dati);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Spese");
-
-    XLSX.writeFile(wb, "spese.xlsx");
+    document.getElementById("lista").innerHTML = html;
+    document.getElementById("totale").innerText = "Totale: € " + totale.toFixed(2);
   });
 }
 
-// BACKUP AUTOMATICO
-function creaBackup() {
-  db.collection("spese").get().then(snapshot => {
-    const dati = [];
-    snapshot.forEach(doc => dati.push(doc.data()));
-
-    db.collection("backup").add({
-      timestamp: Date.now(),
-      dati: dati
-    }).then(() => alert("Backup creato"));
-  });
+// MENU INGRANAGGIO
+function toggleSettings() {
+  const menu = document.getElementById("settings-menu");
+  menu.style.display = (menu.style.display === "none") ? "block" : "none";
 }
 
-// RIPRISTINO
-function ripristinaUltimoBackup() {
-  db.collection("backup").orderBy("timestamp", "desc").limit(1).get().then(snapshot => {
-    if (snapshot.empty) return alert("Nessun backup");
-
-    const backup = snapshot.docs[0].data().dati;
-
-    db.collection("spese").get().then(speseSnap => {
-      const batch = db.batch();
-      speseSnap.forEach(doc => batch.delete(doc.ref));
-      batch.commit().then(() => {
-        backup.forEach(s => db.collection("spese").add(s));
-      });
-    });
-  });
+// ESPORTA
+function esporta() {
+  alert("Funzione esporta in sviluppo");
 }
 
-// BACKUP JSON
-function esportaBackupJSON() {
-  db.collection("spese").get().then(snapshot => {
-    const dati = [];
-    snapshot.forEach(doc => dati.push(doc.data()));
-
-    const blob = new Blob([JSON.stringify(dati, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "backup_spese.json";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  });
+// BACKUP
+function backup() {
+  alert("Funzione backup in sviluppo");
 }
+
 </script>
 
 </body>
