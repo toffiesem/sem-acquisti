@@ -1,0 +1,23 @@
+{
+  "name": "SeM – Gestione Spese",
+  "short_name": "SeM",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1E88E5",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "splash.png",
+      "sizes": "1170x2532",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ]
+}
