@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<title>SeM – Acquisti</title>
+<title>SeM – Gestione Spese</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <!-- Firebase compat -->
@@ -10,8 +10,90 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="logo.png">
+
 <style>
 body { font-family: Arial; padding: 20px; }
+
+/* Titolo responsive */
+h1 {
+  text-align: center;
+  font-size: clamp(22px, 4vw, 36px);
+  margin-bottom: 20px;
+}
+
+/* LOGO ANIMATO */
+#logo-container {
+  text-align: center;
+  font-size: clamp(40px, 8vw, 70px);
+  font-weight: 700;
+  font-family: 'Arial', sans-serif;
+  color: #1E88E5;
+  margin-bottom: 10px;
+  position: relative;
+  height: 80px;
+}
+
+.logo-letter {
+  position: absolute;
+  top: 0;
+  opacity: 0;
+}
+
+/* Posizioni finali */
+#logo-s { left: 50%; transform: translateX(-60px); }
+#logo-e { left: 50%; transform: translateX(-10px); }
+#logo-m { left: 50%; transform: translateX(40px); }
+
+/* Animazioni */
+.animate-s {
+  animation: slideFromLeft 1s ease-out forwards;
+}
+
+.animate-e {
+  animation: fadeIn 1.2s ease-out forwards;
+  animation-delay: 0.4s;
+}
+
+.animate-m {
+  animation: slideFromRight 1s ease-out forwards;
+  animation-delay: 0.2s;
+}
+
+/* Keyframes */
+@keyframes slideFromLeft {
+  0% { opacity: 0; transform: translateX(-200px); }
+  100% { opacity: 1; transform: translateX(-60px); }
+}
+
+@keyframes slideFromRight {
+  0% { opacity: 0; transform: translateX(200px); }
+  100% { opacity: 1; transform: translateX(40px); }
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* Tabella */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+table th, table td {
+  border-bottom: 1px solid #ddd;
+  padding: 8px;
+}
+
+table th {
+  background: #f0f0f0;
+  text-align: left;
+}
+
 #app-area { display: none; }
 #settings-menu { display:none; margin-top:10px; }
 button { margin:5px; padding:10px; }
@@ -31,7 +113,14 @@ button { margin:5px; padding:10px; }
 <!-- APP -->
 <div id="app-area">
 
-  <h2>Gestione Spese</h2>
+  <!-- LOGO ANIMATO -->
+  <div id="logo-container">
+    <span class="logo-letter" id="logo-s">S</span>
+    <span class="logo-letter" id="logo-e">e</span>
+    <span class="logo-letter" id="logo-m">M</span>
+  </div>
+
+  <h1>Gestione Spese Mensili</h1>
 
   <!-- Pulsante ingranaggio -->
   <button id="settings-btn" onclick="toggleSettings()">⚙️</button>
@@ -44,24 +133,9 @@ button { margin:5px; padding:10px; }
 
   <!-- Filtri -->
   <h3>Filtri</h3>
-  <select id="mese">
-    <option value="1">Gennaio</option>
-    <option value="2">Febbraio</option>
-    <option value="3">Marzo</option>
-    <option value="4">Aprile</option>
-    <option value="5">Maggio</option>
-    <option value="6">Giugno</option>
-    <option value="7">Luglio</option>
-    <option value="8">Agosto</option>
-    <option value="9">Settembre</option>
-    <option value="10">Ottobre</option>
-    <option value="11">Novembre</option>
-    <option value="12">Dicembre</option>
-  </select>
+  <select id="mese"></select>
+  <select id="anno"></select>
 
-  <input id="anno" type="number" value="2024">
-
-  <button onclick="aggiorna()">Visualizza spese</button>
   <button onclick="mostraSpeseMeseCorrente()">Mostra spese mese corrente</button>
 
   <hr>
@@ -74,9 +148,17 @@ button { margin:5px; padding:10px; }
 
   <hr>
 
-  <!-- Lista spese -->
-  <h3>Spese</h3>
-  <ul id="lista"></ul>
+  <!-- Tabella spese -->
+  <table id="tabella-spese">
+    <thead>
+      <tr>
+        <th>Motivo</th>
+        <th>Importo (€)</th>
+        <th>Data</th>
+      </tr>
+    </thead>
+    <tbody id="tbody-spese"></tbody>
+  </table>
 
   <h3 id="totale">Totale: € 0</h3>
 
@@ -85,14 +167,13 @@ button { margin:5px; padding:10px; }
 <script>
 // CONFIG FIREBASE
 const firebaseConfig = {
-    apiKey: "AIzaSyAvF1s89fuKnJAzx6TbU7WbqDqNvGPRE5k",
-    authDomain: "sem-acquisti.firebaseapp.com",
-    projectId: "sem-acquisti",
-    storageBucket: "sem-acquisti.firebasestorage.app",
-    messagingSenderId: "672213974481",
-    appId: "1:672213974481:web:ec91d7a28b5dca231a34f0",
-    measurementId: "G-RC731QR9E9"
-  };
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
@@ -104,26 +185,70 @@ function login() {
     .catch(err => alert(err.message));
 }
 
+// ANIMAZIONE LOGO
+function animaLogo() {
+  document.getElementById("logo-s").classList.remove("animate-s");
+  document.getElementById("logo-e").classList.remove("animate-e");
+  document.getElementById("logo-m").classList.remove("animate-m");
+
+  void document.getElementById("logo-s").offsetWidth;
+
+  document.getElementById("logo-s").classList.add("animate-s");
+  document.getElementById("logo-e").classList.add("animate-e");
+  document.getElementById("logo-m").classList.add("animate-m");
+}
+
+// POPOLA MESI E ANNI SOLO SE ESISTONO SPESE
+function popolaMesiAnni() {
+  db.collection("spese").orderBy("timestamp", "desc").get().then(snapshot => {
+    const mesiSet = new Set();
+    const anniSet = new Set();
+
+    snapshot.forEach(doc => {
+      const d = new Date(doc.data().timestamp);
+      mesiSet.add(d.getMonth() + 1);
+      anniSet.add(d.getFullYear());
+    });
+
+    const meseSelect = document.getElementById("mese");
+    const annoSelect = document.getElementById("anno");
+
+    meseSelect.innerHTML = "";
+    annoSelect.innerHTML = "";
+
+    const nomiMesi = [
+      "Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno",
+      "Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre"
+    ];
+
+    mesiSet.forEach(m => {
+      meseSelect.innerHTML += `<option value="${m}">${nomiMesi[m-1]}</option>`;
+    });
+
+    anniSet.forEach(a => {
+      annoSelect.innerHTML += `<option value="${a}">${a}</option>`;
+    });
+
+    const oggi = new Date();
+    if (mesiSet.has(oggi.getMonth() + 1)) meseSelect.value = oggi.getMonth() + 1;
+    if (anniSet.has(oggi.getFullYear())) annoSelect.value = oggi.getFullYear();
+  });
+}
+
 // MOSTRA APP DOPO LOGIN
 auth.onAuthStateChanged(user => {
   if (user) {
     document.getElementById("login-area").style.display = "none";
     document.getElementById("app-area").style.display = "block";
 
-    impostaMeseCorrente();
+    popolaMesiAnni();
     aggiorna();
+    animaLogo();
   } else {
     document.getElementById("login-area").style.display = "block";
     document.getElementById("app-area").style.display = "none";
   }
 });
-
-// IMPOSTA MESE CORRENTE
-function impostaMeseCorrente() {
-  const oggi = new Date();
-  document.getElementById("mese").value = oggi.getMonth() + 1;
-  document.getElementById("anno").value = oggi.getFullYear();
-}
 
 // AGGIUNGI SPESA
 function aggiungi() {
@@ -139,12 +264,14 @@ function aggiungi() {
   importo.value = "0";
 
   aggiorna();
+  popolaMesiAnni();
+  animaLogo();
 }
 
 // MOSTRA SPESE MESE CORRENTE
 function mostraSpeseMeseCorrente() {
-  impostaMeseCorrente();
   aggiorna();
+  animaLogo();
 }
 
 // AGGIORNA LISTA
@@ -161,13 +288,21 @@ function aggiorna() {
       const d = new Date(s.timestamp);
 
       if (d.getMonth() + 1 === mese && d.getFullYear() === anno) {
-        html += `<li>${s.motivazione} - € ${s.importo.toFixed(2)}</li>`;
+        html += `
+          <tr>
+            <td>${s.motivazione}</td>
+            <td>€ ${s.importo.toFixed(2)}</td>
+            <td>${d.toLocaleDateString()}</td>
+          </tr>
+        `;
         totale += s.importo;
       }
     });
 
-    document.getElementById("lista").innerHTML = html;
+    document.getElementById("tbody-spese").innerHTML = html;
     document.getElementById("totale").innerText = "Totale: € " + totale.toFixed(2);
+
+    animaLogo();
   });
 }
 
