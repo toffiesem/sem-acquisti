@@ -10,8 +10,11 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 
+<!-- Favicon -->
+<link rel="icon" type="image/png" href="assets/img/logo-rounded-transparent.png">
+
+<!-- Manifest PWA -->
 <link rel="manifest" href="manifest.json">
-<link rel="icon" type="image/png" href="logo.png">
 
 <style>
 body { font-family: Arial; padding: 20px; }
@@ -198,7 +201,7 @@ function animaLogo() {
   document.getElementById("logo-m").classList.add("animate-m");
 }
 
-// POPOLA MESI E ANNI SOLO SE ESISTONO SPESE
+// POPOLA MESI E ANNI
 function popolaMesiAnni() {
   db.collection("spese").orderBy("timestamp", "desc").get().then(snapshot => {
     const mesiSet = new Set();
