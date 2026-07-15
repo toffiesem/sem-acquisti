@@ -128,6 +128,8 @@ button { margin:5px; padding:10px; }
 
   <button onclick="mostraSpeseMeseCorrente()">Mostra spese mese corrente</button>
   <button onclick="mostraRiepilogo()">Riepilogo annuale</button>
+  <button onclick="mostraDashboard()">Dashboard</button>
+
 
   <hr>
 
@@ -153,6 +155,21 @@ button { margin:5px; padding:10px; }
   </table>
   <h3>Riepilogo mensile</h3>
   <canvas id="graficoSpese" style="max-width: 600px; margin:auto;"></canvas>
+  <div id="dashboard" style="display:none; margin-top:30px;">
+
+  <h2 style="text-align:center;">Dashboard Spese</h2>
+
+  <h3>Totale annuale</h3>
+  <h3 id="totale-annuale" style="font-size:22px; color:#1E88E5;"></h3>
+
+  <h3>Spese mese per mese</h3>
+  <canvas id="grafico-mensile" style="max-width:600px; margin:auto;"></canvas>
+
+  <h3>Andamento annuale</h3>
+  <canvas id="grafico-annuale" style="max-width:600px; margin:auto;"></canvas>
+
+</div>
+
   <h3 id="totale">Totale: € 0</h3>
 
 </div>
@@ -388,6 +405,81 @@ function mostraRiepilogo() {
     });
   });
 }
+let graficoMensile = null;
+let graficoAnnuale = null;
+
+function mostraDashboard() {
+  document.getElementById("dashboard").style.display = "block";
+
+  db.collection("spese").orderBy("timestamp", "asc").get().then(snapshot => {
+
+    // --- CALCOLO MENSILE ---
+    const totaliMese = Array(12).fill(0);
+
+    snapshot.forEach(doc => {
+      const s = doc.data();
+      const d = new Date(s.timestamp);
+      totaliMese[d.getMonth()] += s.importo;
+    });
+
+    // --- CALCOLO ANNUALE ---
+    const totaliAnno = {};
+    snapshot.forEach(doc => {
+      const s = doc.data();
+      const d = new Date(s.timestamp);
+      const anno = d.getFullYear();
+      if (!totaliAnno[anno]) totaliAnno[anno] = 0;
+      totaliAnno[anno] += s.importo;
+    });
+
+    // Mostra totale dell’anno corrente
+    const annoCorrente = new Date().getFullYear();
+    document.getElementById("totale-annuale").innerText =
+      "Totale " + annoCorrente + ": € " + (totaliAnno[annoCorrente] || 0).toFixed(2);
+
+    const nomiMesi = ["Gen","Feb","Mar","Apr","Mag","Giu","Lug","Ago","Set","Ott","Nov","Dic"];
+
+    // --- GRAFICO MENSILE ---
+    if (graficoMensile) graficoMensile.destroy();
+    graficoMensile = new Chart(document.getElementById("grafico-mensile"), {
+      type: "bar",
+      data: {
+        labels: nomiMesi,
+        datasets: [{
+          label: "Spese mensili (€)",
+          data: totaliMese,
+          backgroundColor: "#1E88E5"
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: { y: { beginAtZero: true } }
+      }
+    });
+
+    // --- GRAFICO ANNUALE ---
+    if (graficoAnnuale) graficoAnnuale.destroy();
+    graficoAnnuale = new Chart(document.getElementById("grafico-annuale"), {
+      type: "line",
+      data: {
+        labels: Object.keys(totaliAnno),
+        datasets: [{
+          label: "Totale annuale (€)",
+          data: Object.values(totaliAnno),
+          borderColor: "#0D47A1",
+          backgroundColor: "rgba(30,136,229,0.3)",
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: { y: { beginAtZero: true } }
+      }
+    });
+
+  });
+}
+
   
 
 </script>
