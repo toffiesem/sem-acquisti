@@ -1,23 +1,22 @@
 {
   "name": "SeM – Gestione Spese",
   "short_name": "SeM",
-  "start_url": "/",
+  "start_url": "/sem-acquisti/",
+  "scope": "/sem-acquisti/",
   "display": "standalone",
-  "background_color": "#ffffff",
+  "background_color": "#FFFFFF",
   "theme_color": "#1E88E5",
+
   "icons": [
     {
-      "src": "logo.png",
+      "src": "assets/img/logo-rounded-transparent.png",
       "sizes": "512x512",
       "type": "image/png"
-    }
-  ],
-  "screenshots": [
+    },
     {
-      "src": "splash.png",
-      "sizes": "1170x2532",
-      "type": "image/png",
-      "form_factor": "wide"
+      "src": "assets/img/logo-rounded-transparent.png",
+      "sizes": "192x192",
+      "type": "image/png"
     }
   ]
 }
