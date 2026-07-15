@@ -10,11 +10,11 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 
+<!-- Manifest corretto per GitHub Pages -->
+<link rel="manifest" href="/sem-acquisti/manifest.json">
+
 <!-- Favicon -->
 <link rel="icon" type="image/png" href="assets/img/logo-rounded-transparent.png">
-
-<!-- Manifest PWA -->
-<link rel="manifest" href="manifest.json">
 
 <style>
 body { font-family: Arial; padding: 20px; }
@@ -50,31 +50,19 @@ h1 {
 #logo-m { left: 50%; transform: translateX(40px); }
 
 /* Animazioni */
-.animate-s {
-  animation: slideFromLeft 1s ease-out forwards;
-}
-
-.animate-e {
-  animation: fadeIn 1.2s ease-out forwards;
-  animation-delay: 0.4s;
-}
-
-.animate-m {
-  animation: slideFromRight 1s ease-out forwards;
-  animation-delay: 0.2s;
-}
+.animate-s { animation: slideFromLeft 1s ease-out forwards; }
+.animate-e { animation: fadeIn 1.2s ease-out forwards; animation-delay: 0.4s; }
+.animate-m { animation: slideFromRight 1s ease-out forwards; animation-delay: 0.2s; }
 
 /* Keyframes */
 @keyframes slideFromLeft {
   0% { opacity: 0; transform: translateX(-200px); }
   100% { opacity: 1; transform: translateX(-60px); }
 }
-
 @keyframes slideFromRight {
   0% { opacity: 0; transform: translateX(200px); }
   100% { opacity: 1; transform: translateX(40px); }
 }
-
 @keyframes fadeIn {
   0% { opacity: 0; }
   100% { opacity: 1; }
@@ -86,12 +74,10 @@ table {
   border-collapse: collapse;
   margin-top: 10px;
 }
-
 table th, table td {
   border-bottom: 1px solid #ddd;
   padding: 8px;
 }
-
 table th {
   background: #f0f0f0;
   text-align: left;
@@ -158,6 +144,7 @@ button { margin:5px; padding:10px; }
         <th>Motivo</th>
         <th>Importo (€)</th>
         <th>Data</th>
+        <th>Elimina</th>
       </tr>
     </thead>
     <tbody id="tbody-spese"></tbody>
@@ -168,7 +155,7 @@ button { margin:5px; padding:10px; }
 </div>
 
 <script>
-// CONFIG FIREBASE
+// CONFIG FIREBASE (inserisci i tuoi valori reali)
 const firebaseConfig = {
     apiKey: "AIzaSyAvF1s89fuKnJAzx6TbU7WbqDqNvGPRE5k",
     authDomain: "sem-acquisti.firebaseapp.com",
@@ -246,6 +233,11 @@ auth.onAuthStateChanged(user => {
     document.getElementById("app-area").style.display = "block";
 
     popolaMesiAnni();
+
+    const oggi = new Date();
+    document.getElementById("mese").value = oggi.getMonth() + 1;
+    document.getElementById("anno").value = oggi.getFullYear();
+
     aggiorna();
     animaLogo();
   } else {
@@ -270,6 +262,17 @@ function aggiungi() {
   aggiorna();
   popolaMesiAnni();
   animaLogo();
+}
+
+// ELIMINA SPESA
+function elimina(id) {
+  if (!confirm("Vuoi davvero eliminare questa spesa?")) return;
+
+  db.collection("spese").doc(id).delete().then(() => {
+    aggiorna();
+    popolaMesiAnni();
+    animaLogo();
+  });
 }
 
 // MOSTRA SPESE MESE CORRENTE
@@ -297,6 +300,7 @@ function aggiorna() {
             <td>${s.motivazione}</td>
             <td>€ ${s.importo.toFixed(2)}</td>
             <td>${d.toLocaleDateString()}</td>
+            <td><button onclick="elimina('${doc.id}')">🗑️</button></td>
           </tr>
         `;
         totale += s.importo;
