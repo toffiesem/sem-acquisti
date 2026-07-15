@@ -15,6 +15,7 @@
 
 <!-- Favicon -->
 <link rel="icon" type="image/png" href="assets/img/logo-rounded-transparent.png">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 body { font-family: Arial; padding: 20px; }
@@ -149,7 +150,8 @@ button { margin:5px; padding:10px; }
     </thead>
     <tbody id="tbody-spese"></tbody>
   </table>
-
+  <h3>Riepilogo mensile</h3>
+  <canvas id="graficoSpese" style="max-width: 600px; margin:auto;"></canvas>
   <h3 id="totale">Totale: € 0</h3>
 
 </div>
@@ -283,6 +285,7 @@ function elimina(id) {
 
 // MOSTRA SPESE MESE CORRENTE
 function mostraSpeseMeseCorrente() {
+  <button onclick="mostraRiepilogo()">Riepilogo annuale</button>
   aggiorna();
   animaLogo();
 }
@@ -335,6 +338,57 @@ function esporta() {
 function backup() {
   alert("Funzione backup in sviluppo");
 }
+let grafico = null;
+
+function mostraRiepilogo() {
+  db.collection("spese").orderBy("timestamp", "asc").get().then(snapshot => {
+    // Totali per mese
+    const totali = Array(12).fill(0);
+
+    snapshot.forEach(doc => {
+      const s = doc.data();
+      const d = new Date(s.timestamp);
+      const mese = d.getMonth(); // 0-11
+      totali[mese] += s.importo;
+    });
+
+    const nomiMesi = [
+      "Gen", "Feb", "Mar", "Apr", "Mag", "Giu",
+      "Lug", "Ago", "Set", "Ott", "Nov", "Dic"
+    ];
+
+    // Se il grafico esiste già, lo distruggo
+    if (grafico) grafico.destroy();
+
+    const ctx = document.getElementById("graficoSpese").getContext("2d");
+
+    grafico = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: nomiMesi,
+        datasets: [{
+          label: "Spese mensili (€)",
+          data: totali,
+          backgroundColor: "#1E88E5",
+          borderColor: "#0D47A1",
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              callback: value => "€ " + value.toFixed(2)
+            }
+          }
+        }
+      }
+    });
+  });
+}
+  
 
 </script>
 
