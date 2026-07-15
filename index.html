@@ -232,19 +232,25 @@ auth.onAuthStateChanged(user => {
     document.getElementById("login-area").style.display = "none";
     document.getElementById("app-area").style.display = "block";
 
-    popolaMesiAnni();
+    // Prima popola i menu
+    popolaMesiAnni().then(() => {
 
-    const oggi = new Date();
-    document.getElementById("mese").value = oggi.getMonth() + 1;
-    document.getElementById("anno").value = oggi.getFullYear();
+      // Poi imposta mese e anno SOLO dopo che i menu sono stati riempiti
+      const oggi = new Date();
+      document.getElementById("mese").value = oggi.getMonth() + 1;
+      document.getElementById("anno").value = oggi.getFullYear();
 
-    aggiorna();
-    animaLogo();
+      // Ora aggiorna correttamente
+      aggiorna();
+      animaLogo();
+    });
+
   } else {
     document.getElementById("login-area").style.display = "block";
     document.getElementById("app-area").style.display = "none";
   }
 });
+
 
 // AGGIUNGI SPESA
 function aggiungi() {
