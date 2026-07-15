@@ -211,7 +211,7 @@ function animaLogo() {
 
 // POPOLA MESI E ANNI
 function popolaMesiAnni() {
-  db.collection("spese").orderBy("timestamp", "desc").get().then(snapshot => {
+  return db.collection("spese").orderBy("timestamp", "desc").get().then(snapshot => {
     const mesiSet = new Set();
     const anniSet = new Set();
 
@@ -239,12 +239,9 @@ function popolaMesiAnni() {
     anniSet.forEach(a => {
       annoSelect.innerHTML += `<option value="${a}">${a}</option>`;
     });
-
-    const oggi = new Date();
-    if (mesiSet.has(oggi.getMonth() + 1)) meseSelect.value = oggi.getMonth() + 1;
-    if (anniSet.has(oggi.getFullYear())) annoSelect.value = oggi.getFullYear();
   });
 }
+
 
 // MOSTRA APP DOPO LOGIN
 auth.onAuthStateChanged(user => {
@@ -252,15 +249,11 @@ auth.onAuthStateChanged(user => {
     document.getElementById("login-area").style.display = "none";
     document.getElementById("app-area").style.display = "block";
 
-    // Prima popola i menu
     popolaMesiAnni().then(() => {
-
-      // Poi imposta mese e anno SOLO dopo che i menu sono stati riempiti
       const oggi = new Date();
       document.getElementById("mese").value = oggi.getMonth() + 1;
       document.getElementById("anno").value = oggi.getFullYear();
 
-      // Ora aggiorna correttamente
       aggiorna();
       animaLogo();
     });
@@ -270,6 +263,7 @@ auth.onAuthStateChanged(user => {
     document.getElementById("app-area").style.display = "none";
   }
 });
+
 
 
 // AGGIUNGI SPESA
